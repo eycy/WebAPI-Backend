@@ -3,70 +3,70 @@ import Router, { RouterContext } from "koa-router";
 import logger from "koa-logger";
 import json from "koa-json";
 import bodyParser from "koa-bodyparser";
-import { CustomErrorMessageFunction, query, body, validationResults } from "koa-req-validation";
+// import { CustomErrorMessageFunction, query, body, validationResults } from "koa-req-validation";
 
 const app: Koa = new Koa();
-const router: Router = new Router();
+// const router: Router = new Router();
 
 
-const customErrorMessage: CustomErrorMessageFunction = (
-    _ctx: RouterContext,
-    value: string
-   ) => {
-    return (
-    `The name must be between 3 and 20 ` +
-    `characters long but received length ${value.length}`
-    );
-   };
+// const customErrorMessage: CustomErrorMessageFunction = (
+//     _ctx: RouterContext,
+//     value: string
+//    ) => {
+//     return (
+//     `The name must be between 3 and 20 ` +
+//     `characters long but received length ${value.length}`
+//     );
+//    };
 
-router.get('/',
-    query("name")       // for the query string "name", e.g. http://localhost:10888?name=XXX
-    .isLength({ min: 3 , max: 10}).optional()
-    .withMessage(customErrorMessage)
-    .build()
-    , async (ctx: RouterContext, next: any) => {
+// router.get('/',
+//     query("name")       // for the query string "name", e.g. http://localhost:10888?name=XXX
+//     .isLength({ min: 3 , max: 10}).optional()
+//     .withMessage(customErrorMessage)
+//     .build()
+//     , async (ctx: RouterContext, next: any) => {
 
-        const result = validationResults(ctx);
-        if (result.hasErrors()) {
-            ctx.status = 422;
-            ctx.body = { err: result.mapped() }
-        } else {
-            ctx.body = { msg: `Hello world! ${ctx.query.name}` };
-        }
-        await next();
+//         const result = validationResults(ctx);
+//         if (result.hasErrors()) {
+//             ctx.status = 422;
+//             ctx.body = { err: result.mapped() }
+//         } else {
+//             ctx.body = { msg: `Hello world! ${ctx.query.name}` };
+//         }
+//         await next();
 
-//        ctx.body = { msg: 'Hello world 1!' };
-//        await next();    // terminate the connection with the client
-})
+// //        ctx.body = { msg: 'Hello world 1!' };
+// //        await next();    // terminate the connection with the client
+// })
 
-const validatorName = [
-    body("name").isLength({ min: 3}).withMessage(customErrorMessage).build(),
-    body("id").isInt({ min: 10000, max: 20000 }).build()
-   ]
+// const validatorName = [
+//     body("name").isLength({ min: 3}).withMessage(customErrorMessage).build(),
+//     body("id").isInt({ min: 10000, max: 20000 }).build()
+//    ]
 
 
-router.post('/', ...validatorName, async (ctx: RouterContext, next: any) => {
-    // const data = ctx.request.body;
-    // ctx.body = data;  // put request body content into response body
-    // await next();
+// router.post('/', ...validatorName, async (ctx: RouterContext, next: any) => {
+//     // const data = ctx.request.body;
+//     // ctx.body = data;  // put request body content into response body
+//     // await next();
 
-    const result = validationResults(ctx);
-    if (result.hasErrors()) {
-        ctx.status = 422;
-        ctx.body = { err: result.mapped() }
-    } else {
-        const data = ctx.request.body;
-        ctx.body = data;
-    }
-    await next();
+//     const result = validationResults(ctx);
+//     if (result.hasErrors()) {
+//         ctx.status = 422;
+//         ctx.body = { err: result.mapped() }
+//     } else {
+//         const data = ctx.request.body;
+//         ctx.body = data;
+//     }
+//     await next();
 
-})
+// })
 
 
 app.use(json());  // use json as request and response
 app.use(logger());  // show output in console
 app.use(bodyParser());
-app.use(router.routes()).use(router.allowedMethods());
+// app.use(router.routes()).use(router.allowedMethods());
 
 
 
