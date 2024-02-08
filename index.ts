@@ -3,10 +3,21 @@ import Router, { RouterContext } from "koa-router";
 import logger from "koa-logger";
 import json from "koa-json";
 import bodyParser from "koa-bodyparser";
+import {router as articles} from './routes/articles';
 // import { CustomErrorMessageFunction, query, body, validationResults } from "koa-req-validation";
 
 const app: Koa = new Koa();
-// const router: Router = new Router();
+
+const welcomeAPI = async (ctx: RouterContext, next: any) => {
+  ctx.body = {
+    msg: "Welcome to the blog API"
+  };
+  await next();
+}
+
+const router: Router = new Router();
+
+router.get('/api/v1', welcomeAPI);
 
 
 // const customErrorMessage: CustomErrorMessageFunction = (
@@ -66,6 +77,8 @@ const app: Koa = new Koa();
 app.use(json());  // use json as request and response
 app.use(logger());  // show output in console
 app.use(bodyParser());
+app.use(router.routes());
+app.use(articles.routes());
 // app.use(router.routes()).use(router.allowedMethods());
 
 
