@@ -3,7 +3,9 @@ import Router, { RouterContext } from "koa-router";
 import logger from "koa-logger";
 import json from "koa-json";
 import bodyParser from "koa-bodyparser";
-import {router as articles} from './routes/articles';
+import { router as articles } from './routes/articles';
+import { router as special } from './routes/specials';
+import passport from "koa-passport";
 // import { CustomErrorMessageFunction, query, body, validationResults } from "koa-req-validation";
 
 const app: Koa = new Koa();
@@ -17,7 +19,7 @@ const welcomeAPI = async (ctx: RouterContext, next: any) => {
 
 const router: Router = new Router();
 
-router.get('/api/v1', welcomeAPI);
+// router.get('/api/v1', welcomeAPI);
 
 
 // const customErrorMessage: CustomErrorMessageFunction = (
@@ -78,23 +80,26 @@ app.use(json());  // use json as request and response
 app.use(logger());  // show output in console
 app.use(bodyParser());
 app.use(router.routes());
-app.use(articles.routes());
+// app.use(articles.routes());
+app.use(passport.initialize());
+app.use(special.middleware());
+app.use(articles.middleware());
 // app.use(router.routes()).use(router.allowedMethods());
 
 
 
 // this 404 must be defined before app.listen
 app.use(async (ctx: RouterContext, next: any) => {
-    try {
-        await next()
-        if (ctx.status === 404) {
-            ctx.status = 404;
-            ctx.body = { err: "No such endpoint existed" }  // define a json output
-        }
-    } catch (err: any) {
-        ctx.body = { err: err }
+  try {
+    await next()
+    if (ctx.status === 404) {
+      ctx.status = 404;
+      ctx.body = { err: "No such endpoint existed" }  // define a json output
     }
-   })
+  } catch (err: any) {
+    ctx.body = { err: err }
+  }
+})
 
 app.listen(10888, () => {
   console.log("Koa Started");
