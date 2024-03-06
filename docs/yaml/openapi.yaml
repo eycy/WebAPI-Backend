@@ -1,0 +1,74 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Back End Demonstration API
+  description: A simple blog API.
+  contact:
+    name: CY
+    email: cyyeung321@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'  
+  servers:
+    - url: 'https://2864e1bf-8dcd-4a02-8418-0d9d62095657-00-1w1jzy6gmnx40.pike.repl.co/api/v1/'
+      description: Development server
+tags:
+  - name: Users
+    description: API endpoints for user management
+  - name: Articles
+    description: Access and perform CRUD operations for blog
+paths:
+  /articles/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Numeric ID of the article
+    get:
+      tags:
+        - Articles
+      description:
+        get article by id
+      response:
+        '200':
+          description: View of an article record
+        '400':
+          description: Article not found
+    put:
+      tags:
+        - Articles
+      description:
+        Update article by ID.
+      responses:
+        '200':
+          description: Update confirmation and link to record.
+        '404':
+          description: Article was not found in the DB.
+    delete:
+      tags:
+        - Articles
+      description:
+        Delete article by ID.
+      responses:
+        '200':
+          description: Delete confirmation.
+        '404':
+          description: User was not found in the DB.
+  /articles:
+    post:
+      tags:
+        - Articles
+      description:
+        Create an article
+      requestBody:
+        description: Article in JSON format
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./article.json#/definitions/article
+      responses:
+        '201':
+          description: article created

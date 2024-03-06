@@ -6,6 +6,7 @@ import bodyParser from "koa-bodyparser";
 import { router as articles } from './routes/articles';
 import { router as special } from './routes/specials';
 import passport from "koa-passport";
+import serve from 'koa-static';
 // import { CustomErrorMessageFunction, query, body, validationResults } from "koa-req-validation";
 
 const app: Koa = new Koa();
@@ -85,7 +86,7 @@ app.use(passport.initialize());
 app.use(special.middleware());
 app.use(articles.middleware());
 // app.use(router.routes()).use(router.allowedMethods());
-
+app.use(serve('./docs'));
 
 
 // this 404 must be defined before app.listen
