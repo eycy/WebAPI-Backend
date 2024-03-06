@@ -32,11 +32,25 @@ export const add = async (article: any) => {
 }
 
 // update an article in the database
-export const update = async (article: any, id: any) => {
+// export const update = async (article: any, id: any) => {
+//   let param = Object.keys(article).map((key) => `${key} = ?`).join(', ')
+//   let values = Object.values(article);
+//   values.push(id);
+//   let query = `UPDATE articles set ${param} where ID = ?`;
+//   try {
+//     await db.run_update(query, values);
+//     return { status: 201 };
+//   } catch (err: any) {
+//     console.log(err);
+//     return err;
+//   }
+// }
+export const update = async (article: any, id: any, userId: any) => {
   let param = Object.keys(article).map((key) => `${key} = ?`).join(', ')
   let values = Object.values(article);
   values.push(id);
-  let query = `UPDATE articles set ${param} where ID = ?`;
+  values.push(userId);
+  let query = `UPDATE articles set ${param} where ID = ? and authorId = ?`;
   try {
     await db.run_update(query, values);
     return { status: 201 };

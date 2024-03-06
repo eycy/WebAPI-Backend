@@ -3,6 +3,8 @@ import bodyParser from "koa-bodyparser";
 import * as model from '../models/articles.model';
 import { basicAuth } from '../controllers/auth';
 
+import passport from "koa-passport";
+
 const router = new Router({ prefix: '/api/v1/articles' });
 
 const articles = [
@@ -73,10 +75,12 @@ const updateArticle = async (ctx: RouterContext, next: any) => {
   // } else {
   //   ctx.status = 404;
   // }
+  const user = ctx.state.user;
+  const userId = ctx.state.user.user.id;
 
   const body = ctx.request.body;
   let id = +ctx.params.id;
-  let result = await model.update(body, id);
+  let result = await model.update(body, id, userId);
   if (result.status == 201) {
     ctx.status = 201;
     ctx.body = body;
@@ -113,7 +117,7 @@ const deleteArticle = async (ctx: RouterContext, next: any) => {
 router.get('/', getAll);
 router.post('/', basicAuth, bodyParser(), createArticle);
 router.get('/:id([0-9]{1,})', getById);
-router.put('/:id([0-9]{1,})', updateArticle);
+router.put('/:id([0-9]{1,})', basicAuth, updateArticle);
 router.del('/:id([0-9]{1,})', deleteArticle);
 
 export { router };

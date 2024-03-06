@@ -30,16 +30,33 @@ passport.use(new BasicStrategy(async (username, password, done) => {
   }
 }));
 
+// export const basicAuth = async (ctx: RouterContext, next: any) => {
+//   await passport.authenticate("basic", { session: false })(ctx, next);
+//   if (ctx.status == 401) {
+//     ctx.body = {
+//       message: 'you are not authorized'
+//     };
+//   }
+// } 
+
 export const basicAuth = async (ctx: RouterContext, next: any) => {
-  await passport.authenticate("basic", { session: false })(ctx, next);
-  if (ctx.status == 401) {
-    ctx.body = {
-      message: 'you are not authorized'
-    };
-  } 
-  // else {
-  //   ctx.body = {
-  //     message: 'you are passed'
-  //   };
-  // }
-} 
+  await passport.authenticate("basic", { session: false }, async (err, user) => {
+    if (err) {
+      console.error(`Error during authentication: ${err}`);
+      ctx.status = 500;
+      ctx.body = { error: "Internal server error" };
+      return;
+    }
+
+    if (!user) {
+      ctx.status = 401;
+      ctx.body = { error: "Unauthorized: Invalid credentials" };
+      return;
+    }
+
+    // Store the authenticated user in ctx.state
+    ctx.state.user = user;
+
+    await next();
+  })(ctx, next);
+};
