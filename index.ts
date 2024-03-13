@@ -11,12 +11,12 @@ import serve from 'koa-static';
 
 const app: Koa = new Koa();
 
-const welcomeAPI = async (ctx: RouterContext, next: any) => {
-  ctx.body = {
-    msg: "Welcome to the blog API"
-  };
-  await next();
-}
+// const welcomeAPI = async (ctx: RouterContext, next: any) => {
+//   ctx.body = {
+//     msg: "Welcome to the blog API"
+//   };
+//   await next();
+// }
 
 const router: Router = new Router();
 

@@ -4,21 +4,21 @@ import * as model from '../models/articles.model';
 import { basicAuth } from '../controllers/auth';
 import { validateArticle } from '../controllers/validation';
 
-import passport from "koa-passport";
+// import passport from "koa-passport";
 
 const router = new Router({ prefix: '/api/v1/articles' });
 
-const articles = [
-  { title: 'hello article', fullText: 'some text here to fill the body' },
-  { title: 'another article', fullText: 'again here is some text here to fill' },
-  { title: 'coventry university ', fullText: 'some news about coventry university' },
-  { title: 'smart campus', fullText: 'smart campus is coming to IVE' }
-];
+// const articles = [
+//   { title: 'hello article', fullText: 'some text here to fill the body' },
+//   { title: 'another article', fullText: 'again here is some text here to fill' },
+//   { title: 'coventry university ', fullText: 'some news about coventry university' },
+//   { title: 'smart campus', fullText: 'smart campus is coming to IVE' }
+// ];
 
 const getAll = async (ctx: RouterContext, next: any) => {
   //ctx.body = articles;
 
-  let articles = await model.getAll();
+  const articles = await model.getAll();
   if (articles.length) {
     ctx.body = articles;
   } else {
@@ -35,8 +35,8 @@ const getById = async (ctx: RouterContext, next: any) => {
   //   ctx.status = 404;
   // }
 
-  let id = +ctx.params.id;
-  let articles = await model.getById(id);
+  const id = +ctx.params.id;
+  const articles = await model.getById(id);
   if (articles.length)
     ctx.body = articles[0];
   else
@@ -53,7 +53,7 @@ const createArticle = async (ctx: RouterContext, next: any) => {
   // ctx.body = newArticle;
 
   const body = ctx.request.body;
-  let result = await model.add(body);
+  const result = await model.add(body);
   if (result.status == 201) {
     ctx.status = 201;
     ctx.body = body;
@@ -65,6 +65,7 @@ const createArticle = async (ctx: RouterContext, next: any) => {
   await next();
 }
 
+// TODO
 const updateArticle = async (ctx: RouterContext, next: any) => {
   // let id = +ctx.params.id;
   // if ((id < articles.length + 1) && (id > 0)) {
@@ -76,12 +77,12 @@ const updateArticle = async (ctx: RouterContext, next: any) => {
   // } else {
   //   ctx.status = 404;
   // }
-  const user = ctx.state.user;
+  // const user = ctx.state.user;
   const userId = ctx.state.user.user.id;
 
   const body = ctx.request.body;
-  let id = +ctx.params.id;
-  let result = await model.update(body, id, userId);
+  const id = +ctx.params.id;
+  const result = await model.update(body, id, userId);
   if (result.status == 201) {
     ctx.status = 201;
     ctx.body = body;
@@ -103,8 +104,8 @@ const deleteArticle = async (ctx: RouterContext, next: any) => {
   //   ctx.status = 404;
   // }
 
-  let id = +ctx.params.id;
-  let result = await model.deleteById(id);
+  const id = +ctx.params.id;
+  const result = await model.deleteById(id);
   if (result.status == 200) {
     ctx.status = 200;
     ctx.body = id;

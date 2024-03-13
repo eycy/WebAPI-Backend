@@ -1,14 +1,14 @@
 import Koa from "koa";
-import Router, { RouterContext } from "koa-router";
+import { RouterContext } from "koa-router";
 import logger from "koa-logger";
 import json from "koa-json";
 import bodyParser from "koa-bodyparser";
 // import { CustomErrorMessageFunction, query, body, validationResults } from "koa-req-validation";
 
 const app: Koa = new Koa();
-const router: Router = new Router();
+// const router: Router = new Router();
 
-const list: String[] = [];
+// const list: string[] = [];
 
 
 // const customErrorMessage: CustomErrorMessageFunction = (

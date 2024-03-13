@@ -2,27 +2,27 @@ import * as db from '../helpers/database';
 
 //get a single article by its id
 export const getById = async (id: any) => {
-  let query = "SELECT * FROM articles WHERE ID = ?"
-  let values = [id]
-  let data = await db.run_query(query, values);
+  const query = "SELECT * FROM articles WHERE ID = ?"
+  const values = [id]
+  const data = await db.run_query(query, values);
   return data;
 }
 //list all the articles in the database
 export const getAll = async () => {
   // TODO: use page, limit, order to give pagination
-  let query = "SELECT * FROM articles;"
-  let data = await db.run_query(query, null);
+  const query = "SELECT * FROM articles;"
+  const data = await db.run_query(query, null);
   return data;
 }
 //create a new article in the database
 export const add = async (article: any) => {
-  let keys = Object.keys(article);
-  let values = Object.values(article);
-  let key = keys.join(',');
+  const keys = Object.keys(article);
+  const values = Object.values(article);
+  const key = keys.join(',');
   let param = '';
   for (let i: number = 0; i < values.length; i++) { param += '?,' }
   param = param.slice(0, -1);
-  let query = `INSERT INTO articles (${key}) VALUES (${param})`;
+  const query = `INSERT INTO articles (${key}) VALUES (${param})`;
   try {
     await db.run_insert(query, values);
     return { status: 201 };
@@ -46,11 +46,11 @@ export const add = async (article: any) => {
 //   }
 // }
 export const update = async (article: any, id: any, userId: any) => {
-  let param = Object.keys(article).map((key) => `${key} = ?`).join(', ')
-  let values = Object.values(article);
+  const param = Object.keys(article).map((key) => `${key} = ?`).join(', ')
+  const values = Object.values(article);
   values.push(id);
   values.push(userId);
-  let query = `UPDATE articles set ${param} where ID = ? and authorId = ?`;
+  const query = `UPDATE articles set ${param} where ID = ? and authorId = ?`;
   try {
     await db.run_update(query, values);
     return { status: 201 };
@@ -64,8 +64,8 @@ export const update = async (article: any, id: any, userId: any) => {
 // delete an article in the database
 // delete from articles where id = 7
 export const deleteById = async (id: any) => {
-  let values = [id];
-  let query = `delete from articles where ID = ?`;
+  const values = [id];
+  const query = `delete from articles where ID = ?`;
   try {
     await db.run_delete(query, values);
     return { status: 200 };
