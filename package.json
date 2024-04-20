@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@koa/cors": "^5.0.0",
     "@types/jsonschema": "^1.1.1",
     "@types/koa": "^2.14.0",
     "@types/koa-bodyparser": "^4.3.12",
@@ -12,6 +13,7 @@
     "jsonschema": "^1.4.1",
     "koa": "^2.15.0",
     "koa-bodyparser": "^4.4.1",
+    "koa-cors": "^0.0.16",
     "koa-json": "^2.0.2",
     "koa-logger": "^3.2.1",
     "koa-passport": "^6.0.0",

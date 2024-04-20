@@ -3,6 +3,7 @@ import Router, { RouterContext } from "koa-router";
 import logger from "koa-logger";
 import json from "koa-json";
 import bodyParser from "koa-bodyparser";
+import cors from "koa-cors";
 import { router as articles } from './routes/articles';
 import { router as special } from './routes/specials';
 import passport from "koa-passport";
@@ -76,7 +77,7 @@ const router: Router = new Router();
 
 // })
 
-
+app.use(cors());
 app.use(json());  // use json as request and response
 app.use(logger());  // show output in console
 app.use(bodyParser());
