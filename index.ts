@@ -9,7 +9,7 @@ import { router as special } from './routes/specials';
 import passport from "koa-passport";
 import serve from 'koa-static';
 // import { CustomErrorMessageFunction, query, body, validationResults } from "koa-req-validation";
-
+//test
 const app: Koa = new Koa();
 
 // const welcomeAPI = async (ctx: RouterContext, next: any) => {
