@@ -31,26 +31,14 @@ export const add = async (article: any) => {
   }
 }
 
-// update an article in the database
-// export const update = async (article: any, id: any) => {
-//   let param = Object.keys(article).map((key) => `${key} = ?`).join(', ')
-//   let values = Object.values(article);
-//   values.push(id);
-//   let query = `UPDATE articles set ${param} where ID = ?`;
-//   try {
-//     await db.run_update(query, values);
-//     return { status: 201 };
-//   } catch (err: any) {
-//     console.log(err);
-//     return err;
-//   }
-// }
+// update an article by id
 export const update = async (article: any, id: any, userId: any) => {
   const param = Object.keys(article).map((key) => `${key} = ?`).join(', ')
   const values = Object.values(article);
+  values.push(new Date().toISOString()); // Add current time as DateModified
   values.push(id);
   values.push(userId);
-  const query = `UPDATE articles set ${param} where ID = ? and authorId = ?`;
+  const query = `UPDATE articles SET ${param}, DateModified = ? WHERE ID = ? AND authorId = ?`;
   try {
     await db.run_update(query, values);
     return { status: 201 };
@@ -62,7 +50,6 @@ export const update = async (article: any, id: any, userId: any) => {
 
 
 // delete an article in the database
-// delete from articles where id = 7
 export const deleteById = async (id: any) => {
   const values = [id];
   const query = `delete from articles where ID = ?`;
