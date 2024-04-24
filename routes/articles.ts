@@ -110,6 +110,6 @@ router.get('/', getAll);
 router.post('/', basicAuth, bodyParser(), validateArticle, createArticle);
 router.get('/:id([0-9]{1,})', getById);
 router.put('/:id([0-9]{1,})', basicAuth, bodyParser(), validateArticle, updateArticle);
-router.del('/:id([0-9]{1,})', deleteArticle);
+router.del('/:id([0-9]{1,})', basicAuth, deleteArticle);
 
 export { router };
