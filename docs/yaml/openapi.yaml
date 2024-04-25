@@ -15,60 +15,60 @@ info:
 tags:
   - name: Users
     description: API endpoints for user management
-  - name: Articles
+  - name: dogs
     description: Access and perform CRUD operations for blog
 paths:
-  /articles/{id}:
+  /dogs/{id}:
     parameters:
       - in: path
         name: id
         schema:
           type: integer
         required: true
-        description: Numeric ID of the article
+        description: Numeric ID of the dog
     get:
       tags:
-        - Articles
+        - dogs
       description:
-        get article by id
+        get dog by id
       response:
         '200':
-          description: View of an article record
+          description: View of an dog record
         '400':
-          description: Article not found
+          description: dog not found
     put:
       tags:
-        - Articles
+        - dogs
       description:
-        Update article by ID.
+        Update dog by ID.
       responses:
         '200':
           description: Update confirmation and link to record.
         '404':
-          description: Article was not found in the DB.
+          description: dog was not found in the DB.
     delete:
       tags:
-        - Articles
+        - dogs
       description:
-        Delete article by ID.
+        Delete dog by ID.
       responses:
         '200':
           description: Delete confirmation.
         '404':
           description: User was not found in the DB.
-  /articles:
+  /dogs:
     post:
       tags:
-        - Articles
+        - dogs
       description:
-        Create an article
+        Create an dog
       requestBody:
-        description: Article in JSON format
+        description: dog in JSON format
         required: true
         content:
           application/json:
             schema:
-              $ref: ./article.json#/definitions/article
+              $ref: ./dog.json#/definitions/dog
       responses:
         '201':
-          description: article created
+          description: dog created

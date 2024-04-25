@@ -1,39 +1,39 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "definitions": {
-    "article": {
-      "id": "/article",
-      "title": "Article",
-      "description": "An article in the blog",
+    "dog": {
+      "id": "/dog",
+      "title": "dog",
+      "description": "An dog in the blog",
       "type": "object",
       "properties": {
-        "title": {
-          "description": "Main title of the blog article",
+        "name": {
+          "description": "The name of the dog",
           "type": "string"
         },
-        "allText": {
-          "description": "Body text of the blog article",
+        "description": {
+          "description": "Anything about the dog",
           "type": "string"
         },
-        "summary": {
-          "description": "Optional short text summary of article",
-          "type": "string"
+        "breed_id": {
+          "description": "The ID of the breed",
+          "type": "integer"
         },
         "imageURL": {
-          "description": "URL for main image to show in article",
+          "description": "URL for main image to show in dog",
           "type": "uri"
         },
         "published": {
-          "description": "Is the article published or not",
+          "description": "Is the dog listing published or not",
           "type": "boolean"
         },
         "authorID": {
-          "description": "User ID of the article author",
+          "description": "User ID of the dog listing author",
           "type": "integer",
           "minimum": 0
         },
       },
-      "required": ["title", "allText", "authorID"]
+      "required": ["name", "breed_id"]
     }
   }
 }
