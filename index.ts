@@ -6,6 +6,7 @@ import bodyParser from "koa-bodyparser";
 import cors from "koa-cors";
 import { router as articles } from './routes/articles';
 import { router as special } from './routes/specials';
+import { router as login } from './routes/login';
 import passport from "koa-passport";
 import serve from 'koa-static';
 // import { CustomErrorMessageFunction, query, body, validationResults } from "koa-req-validation";
@@ -86,6 +87,7 @@ app.use(router.routes());
 app.use(passport.initialize());
 app.use(special.middleware());
 app.use(articles.middleware());
+app.use(login.middleware());
 // app.use(router.routes()).use(router.allowedMethods());
 app.use(serve('./docs'));
 

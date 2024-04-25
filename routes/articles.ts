@@ -65,24 +65,13 @@ const createArticle = async (ctx: RouterContext, next: any) => {
   await next();
 }
 
-// TODO
 const updateArticle = async (ctx: RouterContext, next: any) => {
-  // let id = +ctx.params.id;
-  // if ((id < articles.length + 1) && (id > 0)) {
-  //   let { title, fullText } = ctx.request.body;
-  //   articles[id - 1].title = title;
-  //   articles[id - 1].fullText = fullText;
-  //   ctx.status = 200;
-  //   ctx.body = articles[id - 1];
-  // } else {
-  //   ctx.status = 404;
-  // }
-  // const user = ctx.state.user;
-  const userId = ctx.state.user.user.id;
-
   const body = ctx.request.body;
   const id = +ctx.params.id;
+  const userId = ctx.state.user.user.id;
+
   const result = await model.update(body, id, userId);
+
   if (result.status == 201) {
     ctx.status = 201;
     ctx.body = body;
@@ -90,8 +79,9 @@ const updateArticle = async (ctx: RouterContext, next: any) => {
     ctx.status = 500;
     ctx.body = { err: "update data failed" };
   }
+
   await next();
-}
+};
 
 
 const deleteArticle = async (ctx: RouterContext, next: any) => {
@@ -120,6 +110,6 @@ router.get('/', getAll);
 router.post('/', basicAuth, bodyParser(), validateArticle, createArticle);
 router.get('/:id([0-9]{1,})', getById);
 router.put('/:id([0-9]{1,})', basicAuth, bodyParser(), validateArticle, updateArticle);
-router.del('/:id([0-9]{1,})', deleteArticle);
+router.del('/:id([0-9]{1,})', basicAuth, deleteArticle);
 
 export { router };
