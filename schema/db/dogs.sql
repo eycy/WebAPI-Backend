@@ -1,8 +1,12 @@
+drop table public.dogs;
+
 CREATE TABLE public.dogs (
   id serial4 NOT NULL,
   name varchar(32) NOT NULL,
-  breed_id serial4 NOT NULL,
+  breed_id int4 NOT NULL,
   description text NULL,
+  location varchar(64) NULL,
+  dob date NULL,
   datecreated timestamp NOT NULL DEFAULT now(),
   datemodified timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   imageurl varchar(2048) NULL,
@@ -13,6 +17,7 @@ CREATE TABLE public.dogs (
   FOREIGN KEY(breed_id) 
     REFERENCES breeds(id)
 );
+
 
 INSERT INTO dogs (name, breed_id, description) VALUES
 ('Money', 1, 'Description for Money'),

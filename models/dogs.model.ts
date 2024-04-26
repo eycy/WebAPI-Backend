@@ -18,11 +18,23 @@ export const getAll = async () => {
 export const add = async (dog: any) => {
   const keys = Object.keys(dog);
   const values = Object.values(dog);
+  // const values = Object.values(dog).map((value, index) => {
+  //   if (keys[index] === 'breed_id') {
+  //     const intValue = parseInt(value);
+  //     if (isNaN(intValue)) {
+  //       throw new Error('The value of "breed_id" must be an integer.');
+  //     }
+  //     return intValue;
+  //   } else {
+  //     return value;
+  //   }
+  // });
   const key = keys.join(',');
   let param = '';
   for (let i: number = 0; i < values.length; i++) { param += '?,' }
   param = param.slice(0, -1);
   const query = `INSERT INTO dogs (${key}) VALUES (${param})`;
+  console.log(query);
   try {
     await db.run_insert(query, values);
     return { status: 201 };

@@ -10,6 +10,12 @@ export const validateDog = async (ctx: RouterContext, next: any) => {
     allowUnknownAttributes: false
   }
   const body = ctx.request.body;
+  
+  // Perform type conversion on breed_id if it exists
+  if (body.breed_id) {
+    body.breed_id = parseInt(body.breed_id);
+  }
+  
   try {
     v.validate(body, dog, validationOptions);
     await next();
