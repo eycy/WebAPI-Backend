@@ -3,8 +3,10 @@ import json from 'koa-json';
 import passport from 'koa-passport';
 import { router } from './dogs';
 import request from 'supertest';
+import * as model from '../models/dogs.model';
 
 const credential: string = 'Basic YWxpY2U6cGFzc3dvcmQ='; // Base64 encoded credentials: Alice:password
+
 
 const app: Koa = new Koa();
 app.use(json());
@@ -21,8 +23,6 @@ afterAll((done) => {
   server.close(done); // Close the server instance
 });
 
-
-// app.listen(3000);
 
 describe('Get / - a simple api endpoint', () => {
   test('Get all dog', async () => {
@@ -114,4 +114,97 @@ describe('DELETE /api/v1/dogs/:id - delete an dog', () => {
     // Assert the response
     expect(response.statusCode).toEqual(200);
   }, 10000); // Increase timeout to 10 seconds
+});
+
+describe('GET /api/v1/dogs/search - search with fields', () => {
+  beforeEach(() => {
+
+    // Mock the database response
+    jest.mock('../models/dogs.model', () => ({
+      searchByFields: jest.fn(),
+    }));
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should make a successful call with AND operator', async () => {
+    const searchFields = { name: 'test', breed_id: '1', operator: 'AND' };
+    const expectedData = [{ id: 1, name: 'Test Dog', breed_id: '1'}];
+
+    jest.spyOn(model, 'searchByFields').mockImplementation(
+      async (searchFields: Record<string, string | number>, operator?: 'AND' | 'OR') => {
+        // Simulate the resolved value
+        return expectedData;
+      }
+    );
+
+    const response = await request(app.callback())
+      .get('/api/v1/dogs/search')
+      .query({ ...searchFields, operator: 'AND' });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(expectedData);
+    expect(model.searchByFields).toHaveBeenCalledWith(searchFields, 'AND');
+  });
+
+  it('should make a successful call with OR operator', async () => {
+    const searchFields = { name: 'test', breed_id: '1', operator: 'OR' };
+    const expectedData = [{ id: 1, name: 'Test Dog', breed_id: '1' }];
+
+    jest.spyOn(model, 'searchByFields').mockImplementation(
+      async (searchFields: Record<string, string | number>, operator?: 'AND' | 'OR') => {
+        // Simulate the resolved value
+        return expectedData;
+      }
+    );
+
+    const response = await request(app.callback())
+      .get('/api/v1/dogs/search')
+      .query({ ...searchFields, operator: 'OR' });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(expectedData);
+    expect(model.searchByFields).toHaveBeenCalledWith(searchFields, 'OR');
+  });
+
+  it('should make a successful call with no operator (default to AND)', async () => {
+    const searchFields = { name: 'test', breed_id: '1' };
+    const expectedData = [{ id: 1, name: 'Test Dog', breed_id: '1' }];
+
+    jest.spyOn(model, 'searchByFields').mockImplementation(
+      async (searchFields: Record<string, string | number>, operator?: 'AND' | 'OR') => {
+        // Simulate the resolved value
+        return expectedData;
+      }
+    );
+
+    const response = await request(app.callback())
+      .get('/api/v1/dogs/search')
+      .query(searchFields);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(expectedData);
+    expect(model.searchByFields).toHaveBeenCalledWith({ ...searchFields, breed_id: '1' }, 'AND');
+  });
+
+  it('should return status 500 when there is an error', async () => {
+    const searchFields = { name: 'test', breed_id: '1', "operator" : "AND" };
+    const errorMessage = 'An error occurred during the search';
+
+    (model.searchByFields as jest.Mock).mockImplementationOnce(
+      async (searchFields: Record<string, string | number>, operator?: 'AND' | 'OR') => {
+        throw new Error(errorMessage);
+      }
+    );
+
+    const response = await request(app.callback())
+      .get('/api/v1/dogs/search')
+      .query({ ...searchFields, operator: 'AND' });
+
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ error: errorMessage });
+    expect(model.searchByFields).toHaveBeenCalledWith(searchFields, 'AND');
+  });
 });

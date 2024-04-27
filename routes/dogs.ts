@@ -31,9 +31,9 @@ const getById = async (ctx: RouterContext, next: any) => {
 
 const searchDogs = async (ctx: RouterContext, next: any) => {
   const searchFields: Record<string, string> = ctx.query as Record<string, string>;
-  const operator: 'AND' | 'OR' = ctx.query.operator || 'AND';
+  const operator: 'AND' | 'OR' | string = Array.isArray(ctx.query.operator) ? ctx.query.operator[0] : ctx.query.operator || 'AND';
   try {
-    const dogs = await model.searchByFields(searchFields, operator);
+    const dogs = await model.searchByFields(searchFields,operator as 'AND' | 'OR');
     ctx.body = dogs;
   } catch (err) {
     ctx.status = 500;
