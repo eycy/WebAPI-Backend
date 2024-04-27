@@ -7,6 +7,44 @@ export const getById = async (id: any) => {
   const data = await db.run_query(query, values);
   return data;
 }
+
+export const searchByFields = async (searchFields: Record<string, string | number>, operator: 'AND' | 'OR' = 'AND') => {
+  const fieldConditions = Object.keys(searchFields).map((field) => {
+    let value = searchFields[field];
+
+    if (field === 'breed_id') {
+      value = parseInt(value as string, 10);
+      return `${field} = :${field}`;
+    } else if (field !== 'operator') {
+      return `${field} ILIKE :${field}`;
+    }
+  });
+
+  const filteredConditions = fieldConditions.filter((condition) => condition !== undefined);
+
+  const query = `
+    SELECT *
+    FROM dogs
+    WHERE ${filteredConditions.join(` ${operator} `)}
+  `;
+
+  const values = {};
+
+  for (const field in searchFields) {
+    const value = searchFields[field];
+    if (field !== 'operator') {
+      if (typeof value === 'string' && field !== 'breed_id') {
+        values[field] = `%${value}%`;
+      } else {
+        values[field] = value;
+      }
+    }
+  }
+
+  const data = await db.run_query(query, values);
+  return data;
+}
+
 //list all the dogs in the database
 export const getAll = async () => {
   // TODO: use page, limit, order to give pagination
@@ -18,17 +56,6 @@ export const getAll = async () => {
 export const add = async (dog: any) => {
   const keys = Object.keys(dog);
   const values = Object.values(dog);
-  // const values = Object.values(dog).map((value, index) => {
-  //   if (keys[index] === 'breed_id') {
-  //     const intValue = parseInt(value);
-  //     if (isNaN(intValue)) {
-  //       throw new Error('The value of "breed_id" must be an integer.');
-  //     }
-  //     return intValue;
-  //   } else {
-  //     return value;
-  //   }
-  // });
   const key = keys.join(',');
   let param = '';
   for (let i: number = 0; i < values.length; i++) { param += '?,' }

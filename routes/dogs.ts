@@ -29,6 +29,20 @@ const getById = async (ctx: RouterContext, next: any) => {
   await next();
 }
 
+const searchDogs = async (ctx: RouterContext, next: any) => {
+  const searchFields: Record<string, string> = ctx.query as Record<string, string>;
+  const operator: 'AND' | 'OR' = ctx.query.operator || 'AND';
+  try {
+    const dogs = await model.searchByFields(searchFields, operator);
+    ctx.body = dogs;
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = { error: 'An error occurred during the search' };
+  }
+
+  await next();
+}
+
 const createDog = async (ctx: RouterContext, next: any) => {
   const body = ctx.request.body;
   const result = await model.add(body);
@@ -80,5 +94,6 @@ router.post('/', basicAuth, bodyParser(), validateDog, createDog);
 router.get('/:id([0-9]{1,})', getById);
 router.put('/:id([0-9]{1,})', basicAuth, bodyParser(), validateDog, updateDog);
 router.del('/:id([0-9]{1,})', basicAuth, deleteDog);
+router.get('/search', searchDogs);
 
 export { router };
