@@ -131,7 +131,7 @@ describe('GET /api/v1/dogs/search - search with fields', () => {
 
   it('should make a successful call with AND operator', async () => {
     const searchFields = { name: 'test', breed_id: '1', operator: 'AND' };
-    const expectedData = [{ id: 1, name: 'Test Dog', breed_id: '1'}];
+    const expectedData = [{ id: 1, name: 'Test Dog', breed_id: '1' }];
 
     jest.spyOn(model, 'searchByFields').mockImplementation(
       async (searchFields: Record<string, string | number>, operator?: 'AND' | 'OR') => {
@@ -190,7 +190,7 @@ describe('GET /api/v1/dogs/search - search with fields', () => {
   });
 
   it('should return status 500 when there is an error', async () => {
-    const searchFields = { name: 'test', breed_id: '1', "operator" : "AND" };
+    const searchFields = { name: 'test', breed_id: '1', "operator": "AND" };
     const errorMessage = 'An error occurred during the search';
 
     (model.searchByFields as jest.Mock).mockImplementationOnce(
@@ -205,6 +205,25 @@ describe('GET /api/v1/dogs/search - search with fields', () => {
 
     expect(response.status).toBe(500);
     expect(response.body).toEqual({ error: errorMessage });
+    expect(model.searchByFields).toHaveBeenCalledWith(searchFields, 'AND');
+  });
+
+  it('should return status 404 when no dogs are found', async () => {
+    const searchFields = { name: 'nonexistent', breed_id: '1', operator: 'AND' };
+
+    jest.spyOn(model, 'searchByFields').mockImplementation(
+      async (searchFields: Record<string, string | number>, operator?: 'AND' | 'OR') => {
+        // Simulate an empty response (no dogs found)
+        return [];
+      }
+    );
+
+    const response = await request(app.callback())
+      .get('/api/v1/dogs/search')
+      .query({ ...searchFields, operator: 'AND' });
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual([]);
     expect(model.searchByFields).toHaveBeenCalledWith(searchFields, 'AND');
   });
 });

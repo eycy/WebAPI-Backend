@@ -35,6 +35,12 @@ const searchDogs = async (ctx: RouterContext, next: any) => {
   try {
     const dogs = await model.searchByFields(searchFields,operator as 'AND' | 'OR');
     ctx.body = dogs;
+
+    if (dogs.length) {
+      ctx.status = 200;
+    } else {
+      ctx.status = 404;
+    }
   } catch (err) {
     ctx.status = 500;
     ctx.body = { error: 'An error occurred during the search' };
