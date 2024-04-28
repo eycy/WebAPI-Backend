@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
   version: 1.0.0
-  title: Back End Demonstration API
-  description: A simple blog API.
+  title: Back End API for Dogs
+  description: A Dog API.
   contact:
     name: CY
     email: cyyeung321@gmail.com
@@ -16,7 +16,7 @@ tags:
   - name: Users
     description: API endpoints for user management
   - name: dogs
-    description: Access and perform CRUD operations for blog
+    description: Access and perform CRUD operations for dogs
 paths:
   /dogs/{id}:
     parameters:
@@ -57,6 +57,13 @@ paths:
         '404':
           description: User was not found in the DB.
   /dogs:
+    get:
+      tags:
+        - dogs
+      description: Get all dogs
+      responses:
+        '200':
+          description: List of all dogs
     post:
       tags:
         - dogs
@@ -72,3 +79,20 @@ paths:
       responses:
         '201':
           description: dog created
+  /dogs/search:
+    get:
+      tags:
+        - dogs
+      description: Search for dogs
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+          required: true
+          description: Search query string
+      responses:
+        '200':
+          description: List of dogs matching the search query
+        '404':
+          description: No dogs found matching the search query
