@@ -15,6 +15,9 @@ export const searchByFields = async (searchFields: Record<string, string | numbe
     if (field === 'breed_id') {
       value = parseInt(value as string, 10);
       return `${field} = :${field}`;
+    } else if (field === 'dob') {
+      const formattedDate = new Date(value as string).toISOString().split('T')[0];
+      return `${field} = '${formattedDate}'`;
     } else if (field !== 'operator') {
       return `${field} ILIKE :${field}`;
     }
@@ -33,7 +36,7 @@ export const searchByFields = async (searchFields: Record<string, string | numbe
   for (const field in searchFields) {
     const value = searchFields[field];
     if (field !== 'operator') {
-      if (typeof value === 'string' && field !== 'breed_id') {
+      if (typeof value === 'string' && field !== 'breed_id' && field !== 'dob') {
         values[field] = `%${value}%`;
       } else {
         values[field] = value;
