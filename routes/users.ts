@@ -9,7 +9,7 @@ const createUserRoute = async (ctx: RouterContext, next: any) => {
   const result = await createUser(userData);
 
   if (result.success) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = { message: result.message };
   } else {
     ctx.status = 500;
