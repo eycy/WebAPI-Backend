@@ -96,3 +96,20 @@ paths:
           description: List of dogs matching the search query
         '404':
           description: No dogs found matching the search query
+  /users:
+    put:
+      tags:
+        - users
+      description: Create a user
+      requestBody:
+        description: User information in JSON format
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./user.json#/definitions/user
+      responses:
+        '201':
+          description: User created
+        '500':
+          description: Error creating user
