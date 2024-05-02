@@ -97,7 +97,7 @@ paths:
         '404':
           description: No dogs found matching the search query
   /users:
-    put:
+    post:
       tags:
         - users
       description: Create a user

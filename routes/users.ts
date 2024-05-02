@@ -19,6 +19,6 @@ const createUserRoute = async (ctx: RouterContext, next: any) => {
   await next();
 };
 
-router.put('/', createUserRoute);
+router.post('/', createUserRoute);
 
 export { router };
