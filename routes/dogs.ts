@@ -4,6 +4,8 @@ import * as model from '../models/dogs.model';
 import { basicAuth } from '../controllers/auth';
 import { validateDog } from '../controllers/validation';
 import multer from 'multer';
+import fs from 'fs';
+import path from 'path';
 
 const router = new Router({ prefix: '/api/v1/dogs' });
 
@@ -99,9 +101,6 @@ const deleteDog = async (ctx: RouterContext, next: any) => {
 // Upload a photo for a specific dog
 const uploadPhoto = async (ctx: RouterContext, next: any) => {
   const id = +ctx.params.id;
-  console.log(ctx.state.user);
-  console.log(ctx.state.user.user.id);
-  const userId = ctx.state.user.user.id;
   const filePath = 'uploads/';
   let originalFileName = '';
   let newFileName = '';
@@ -112,7 +111,7 @@ const uploadPhoto = async (ctx: RouterContext, next: any) => {
     filename: (_, file, cb) => {
       const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
       originalFileName = file.originalname;
-      newFileName = `${userId}_${timestamp}_${originalFileName}`;
+      newFileName = `${id}_${timestamp}_${originalFileName}`;
       cb(null, newFileName);
     }
   });
@@ -147,6 +146,50 @@ const uploadPhoto = async (ctx: RouterContext, next: any) => {
   await next();
 };
 
+const getPhotos = async (ctx: RouterContext, next: any) => {
+  const id = +ctx.params.id;
+  try {
+    const photo = await model.getPhotosById(id);
+    let photoPath = path.join('uploads', 'Photo_Not_Available.jpg');
+    if (photo[0].new_filename != null) {
+      photoPath = path.join('uploads', photo[0].new_filename);
+    }
+    const photoBuffer = await fs.promises.readFile(photoPath);
+    ctx.set('Content-Type', 'image/*');
+    ctx.body = photoBuffer;
+    ctx.status = 200;
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = { error: 'An error occurred while retrieving the photo' };
+  }
+  await next();
+};
+
+const getPhotosByName = async (ctx: RouterContext, next: any) => {
+  const fileName = ctx.query.name;
+  if (!fileName) {
+    ctx.status = 400;
+    ctx.body = { error: 'File name parameter is missing' };
+    return await next();
+  }
+
+  try {
+    const photoPath = path.join('uploads', fileName);
+    const photoBuffer = await fs.promises.readFile(photoPath);
+
+    ctx.set('Content-Type', 'image/*');
+    ctx.body = photoBuffer;
+    ctx.status = 200;
+  } catch (err) {
+    ctx.status = 404;
+    ctx.body = { error: 'Photo not found' };
+  }
+
+  await next();
+};
+
+
+
 router.get('/', getAll);
 router.post('/', basicAuth, bodyParser(), validateDog, createDog);
 router.get('/:id([0-9]{1,})', getById);
@@ -154,7 +197,8 @@ router.put('/:id([0-9]{1,})', basicAuth, bodyParser(), validateDog, updateDog);
 router.del('/:id([0-9]{1,})', basicAuth, deleteDog);
 router.get('/search', searchDogs);
 
-router.post('/:id([0-9]{1,})/upload-photo', basicAuth, uploadPhoto);
-
+router.put('/:id([0-9]{1,})/upload-photo', basicAuth, uploadPhoto);
+router.get('/:id([0-9]{1,})/photos', getPhotos);
+router.get('/photos', getPhotosByName);
 
 export { router };

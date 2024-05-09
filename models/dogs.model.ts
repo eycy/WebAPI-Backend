@@ -117,3 +117,10 @@ export const updatePhoto = async (id: any, filePath: string, originalFileName: s
     return { status: 500 };
   }
 };
+
+export const getPhotosById = async (id: any) => {
+  const query = "SELECT original_filename, new_filename FROM dogs WHERE ID = ?";
+  const values = [id];
+  const data = await db.run_query(query, values);
+  return data;
+};
