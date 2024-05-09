@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "user": {
+      "id": "/user",
+      "title": "user",
+      "description": "An user in the system",
+      "type": "object",
+      "properties": {
+        "firstname": {
+          "description": "Firstname of user",
+          "type": "string"
+        },
+        "lastname": {
+          "description": "Lastname of user",
+          "type": "string"
+        },
+        "username": {
+          "description": "Username for login",
+          "type": "string"
+        },
+        "password": {
+          "description": "Password for login",
+          "type": "string"
+        },
+        "email": {
+          "description": "User email",
+          "type": "string"
+        },
+        "signupcode": {
+          "description": "Staff signup code",
+          "type": "string"
+        },
+      },
+      "required": ["firstname", "lastname", "username", "password", "email"]
+    }
+  }
+}

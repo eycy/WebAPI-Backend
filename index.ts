@@ -7,6 +7,7 @@ import cors from "koa-cors";
 import { router as dogs } from './routes/dogs';
 import { router as special } from './routes/specials';
 import { router as login } from './routes/login';
+import { router as users } from './routes/users';
 import passport from "koa-passport";
 import serve from 'koa-static';
 
@@ -22,6 +23,7 @@ app.use(passport.initialize());
 app.use(special.middleware());
 app.use(dogs.middleware());
 app.use(login.middleware());
+app.use(users.middleware());
 app.use(serve('./docs'));
 
 // this 404 must be defined before app.listen
