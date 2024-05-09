@@ -131,7 +131,7 @@ const uploadPhoto = async (ctx: RouterContext, next: any) => {
             await model.updatePhoto(id, filePath, originalFileName, newFileName);
 
             ctx.status = 200;
-            ctx.body = { message: 'Photo uploaded successfully' };
+            ctx.body = { message: 'Photo uploaded successfully', newFileName };
             resolve();
           } catch (error) {
             ctx.status = 500;
