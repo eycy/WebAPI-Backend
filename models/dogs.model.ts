@@ -102,3 +102,18 @@ export const deleteById = async (id: any) => {
     return err;
   }
 }
+
+
+// update the photo of a dog by id
+export const updatePhoto = async (id: any, filePath: string, originalFileName: string, newFileName: string) => {
+
+  // Update the database fields with the original and updated filenames
+  const query = 'UPDATE dogs SET original_filename = ?, new_filename = ? WHERE ID = ?';
+
+  try {
+    await db.run_update(query, [originalFileName, newFileName, id]);
+    return { status: 200 };
+  } catch (error) {
+    return { status: 500 };
+  }
+};
