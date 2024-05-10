@@ -42,3 +42,29 @@ export const createUser = async (userData: {
     return { success: false, message: 'Error creating user' };
   }
 };
+
+
+
+export const addFavorite = async (userId: number, dogId: number) => {
+  const query = 'INSERT INTO users_fav (user_id, dog_id) VALUES (?, ?)';
+
+  try {
+    await db.run_query(query, [userId, dogId]);
+    return { success: true, message: 'Added to favorites successfully' };
+  } catch (error) {
+    return { success: false, message: 'Failed to add to favorites' };
+  }
+};
+
+
+export const getFavorites = async (userId: number) => {
+  const query = 'SELECT * FROM users_fav WHERE user_id = ?';
+
+  try {
+    const favorites = await db.run_query(query, [userId]);
+    return { success: true, favorites };
+  } catch (error) {
+    return { success: false, message: 'Failed to retrieve favorites' };
+  }
+};
+
