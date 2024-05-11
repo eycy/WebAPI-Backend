@@ -12,6 +12,8 @@ CREATE TABLE public.dogs (
   imageurl varchar(2048) NULL,
   published bool NULL,
   authorid int4 NULL,
+  original_filename varchar(64) NULL,
+  new_filename varchar(64) NULL,
   CONSTRAINT dogs_pkey PRIMARY KEY (id),
   CONSTRAINT fk_breed
   FOREIGN KEY(breed_id) 
