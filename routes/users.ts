@@ -20,9 +20,10 @@ const createUserRoute = async (ctx: RouterContext, next: any) => {
 };
 
 const addFavoriteRoute = async (ctx: RouterContext) => {
-  const { user_id, dog_id } = ctx.request.body;
+  const userid = ctx.state.user.user.id;
+  const { dogid } = ctx.request.body;
 
-  const result = await addFavorite(user_id, dog_id);
+  const result = await addFavorite(userid, dogid);
 
   if (result.success) {
     ctx.status = 201;
