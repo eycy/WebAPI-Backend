@@ -49,10 +49,10 @@ export const addFavorite = async (userId: number, dogId: number) => {
   const query = 'INSERT INTO users_fav (user_id, dog_id) VALUES (?, ?)';
 
   try {
-    await db.run_query(query, [userId, dogId]);
-    return { success: true, message: 'Added to favorites successfully' };
+    await db.run_insert(query, [userId, dogId]);
+    return { success: true };
   } catch (error) {
-    return { success: false, message: 'Failed to add to favorites' };
+    return { success: false };
   }
 };
 
@@ -64,7 +64,18 @@ export const getFavorites = async (userId: number) => {
     const favorites = await db.run_query(query, [userId]);
     return { success: true, favorites };
   } catch (error) {
-    return { success: false, message: 'Failed to retrieve favorites' };
+    return { success: false };
   }
 };
 
+
+export const removeFavorite = async (userId: number, dogId: number) => {
+  const query = 'delete from users_fav where user_id = ? and dog_id = ?';
+
+  try {
+    await db.run_delete(query, [userId, dogId]);
+    return { success: true};
+  } catch (error) {
+    return { success: false};
+  }
+};
