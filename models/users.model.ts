@@ -104,3 +104,75 @@ export const updateAccessToken = async (userId: number, accessToken: string) => 
     return { success: false };
   }
 };
+
+
+export const submitAdoption = async (userId: number, dogId: number, message: string) => {
+  const insertQuery = 'INSERT INTO users_adoption (userid, dogid, user_message) VALUES (?, ?, ?)';
+
+  try {
+    // Insert into users table
+    await db.run_insert(insertQuery, [userId, dogId, message]);
+
+
+    return { success: true, message: 'Adoption submitted successfully' };
+  } catch (error) {
+    return { success: false, message: 'Error submitting adoption' };
+  }
+};
+
+
+export const replyAdoption = async (adoptionId: number, message: string, isAccepted: boolean) => {
+
+  let newStatus = 'Accepted';
+  if (isAccepted == false)
+    newStatus = 'Rejected';
+
+  const updateAdoptionQuery: string = 'UPDATE users_adoption set status = ?, staff_message = ? where id = ?';
+
+  try {
+    // update status
+    await db.run_update(updateAdoptionQuery, [newStatus, message, adoptionId]);
+
+    return { success: true, message: 'Replied adoption successfully' };
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: 'Error submitting adoption message' };
+  }
+};
+
+
+export const getAdoptions = async (userId: number) => {
+  const query = 'select u.username, d.name,a.* from users_adoption a, dogs d, users u where u.id = a.userid and d.id = a.dogid and u.id = ?';
+
+  try {
+    const messages = await db.run_query(query, [userId]);
+    return { success: true, messages };
+  } catch (error) {
+    return { success: false };
+  }
+};
+
+export const getAllAdoptions = async () => {
+  const query = 'select u.username, d.name,a.* from users_adoption a, dogs d, users u where u.id = a.userid and d.id = a.dogid';
+
+  try {
+    const messages = await db.run_query(query, []);
+    return { success: true, messages };
+  } catch (error) {
+    return { success: false };
+  }
+};
+
+export const deleteAdoption = async (adoptionid: number) => {
+  console.log('model adoptionId: ', adoptionid);
+  const query = 'delete from users_adoption where Id = ?';
+
+  try {
+    await db.run_delete(query, [adoptionid]);
+    return { success: true };
+  } catch (error) {
+    return { success: false };
+  }
+};
+
+
