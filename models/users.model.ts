@@ -13,12 +13,13 @@ export const createUser = async (userData: {
   lastname?: string,
   username?: string,
   password?: string,
-  email?: string
+  email?: string,
+  accesstoken?: string,
 }) => {
-  const { signupcode, firstname, lastname, username, password, email } = userData;
+  const { signupcode, firstname, lastname, username, password, email, accesstoken } = userData;
 
-  let query = 'INSERT INTO users (firstname, lastname, username, password, email) VALUES (?, ?, ?, ?, ?)';
-  let values = [firstname, lastname, username, password, email];
+  let query = 'INSERT INTO users (firstname, lastname, username, password, email, accesstoken) VALUES (?, ?, ?, ?, ?, ?)';
+  let values = [firstname, lastname, username, password, email, accesstoken];
 
   if (signupcode) {
     const checkSignupCodeQuery = 'SELECT * FROM signup_code WHERE code = ? AND isUsed = false';
@@ -28,7 +29,7 @@ export const createUser = async (userData: {
       const updateSignupCodeQuery = 'UPDATE signup_code SET isUsed = true WHERE code = ?';
       await db.run_query(updateSignupCodeQuery, [signupcode]);
 
-      query = 'INSERT INTO users (firstname, lastname, username, password, email, signupcode, isStaff) VALUES (?, ?, ?, ?, ?, ?, TRUE)';
+      query = 'INSERT INTO users (firstname, lastname, username, password, email, signupcode, isStaff, accesstoken) VALUES (?, ?, ?, ?, ?, ?, TRUE, ?)';
       values.push(signupcode);
     } else {
       return { success: false, message: 'Incorrect signup code or code already used.' };
@@ -36,7 +37,7 @@ export const createUser = async (userData: {
   }
 
   try {
-    await db.run_query(query, values);
+    await db.run_insert(query, values);
     return { success: true, message: 'User created successfully' };
   } catch (error) {
     return { success: false, message: 'Error creating user' };
@@ -74,8 +75,32 @@ export const removeFavorite = async (userId: number, dogId: number) => {
 
   try {
     await db.run_delete(query, [userId, dogId]);
-    return { success: true};
+    return { success: true };
   } catch (error) {
-    return { success: false};
+    return { success: false };
+  }
+};
+
+export const findByAccessToken = async (accessToken: string) => {
+  const query = 'SELECT * FROM users WHERE accesstoken = ?';
+
+  try {
+    await db.run_query(query, [accessToken]);
+    return { success: true };
+  } catch (error) {
+    console.log(error);
+    return { success: false };
+  }
+}
+
+
+export const updateAccessToken = async (userId: number, accessToken: string) => {
+  const query = 'UPDATE users SET accesstoken = ? WHERE id = ?';
+
+  try {
+    await db.run_update(query, [accessToken, userId]);
+    return { success: true };
+  } catch (error) {
+    return { success: false };
   }
 };

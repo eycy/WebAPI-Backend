@@ -1,6 +1,6 @@
 import Router, { RouterContext } from "koa-router";
-import { basicAuth } from '../controllers/auth';
-import { createUser, addFavorite, getFavorites, removeFavorite } from '../models/users.model';
+import { authenticate } from '../controllers/auth';
+import { createUser, addFavorite, getFavorites, removeFavorite, findByUserName } from '../models/users.model';
 
 const router = new Router({ prefix: '/api/v1/users' });
 
@@ -18,6 +18,18 @@ const createUserRoute = async (ctx: RouterContext, next: any) => {
 
   await next();
 };
+
+
+const getByUsername = async (ctx: RouterContext, next: any) => {
+  const body = ctx.request.body;
+  const dogs = await findByUserName(body.username);
+  if (dogs.length)
+    ctx.status = 200;
+  else
+    ctx.status = 404;
+
+  await next();
+}
 
 const addFavoriteRoute = async (ctx: RouterContext) => {
   const userid = ctx.state.user.user.id;
@@ -38,8 +50,6 @@ const removeFavoriteRoute = async (ctx: RouterContext) => {
   const userid = ctx.state.user.user.id;
   const { dogid } = ctx.request.body;
 
-  console.log(dogid);
-  console.log(userid);
   const result = await removeFavorite(userid, dogid);
 
   if (result.success) {
@@ -68,9 +78,10 @@ const getFavoritesRoute = async (ctx: RouterContext) => {
   }
 };
 
+router.get('/', getByUsername);
 router.post('/', createUserRoute);
-router.post('/addFavorite', basicAuth, addFavoriteRoute);
-router.post('/removeFavorite', basicAuth, removeFavoriteRoute);
-router.get('/favorites', basicAuth, getFavoritesRoute);
+router.post('/addFavorite', authenticate, addFavoriteRoute);
+router.post('/removeFavorite', authenticate, removeFavoriteRoute);
+router.get('/favorites', authenticate, getFavoritesRoute);
 
 export { router };

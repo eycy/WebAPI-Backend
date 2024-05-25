@@ -28,6 +28,8 @@ export const run_insert = async function run_insert(sql: string, values: any) {
       type: QueryTypes.INSERT
     });
     await sequelize.close();
+    console.log('run_insert:');
+    console.log(data);
     return data;
   } catch (err: any) {
     console.error(err, values);
