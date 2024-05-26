@@ -6,6 +6,7 @@ import { validateDog } from '../controllers/validation';
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
+import { config } from '../config';
 
 const router = new Router({ prefix: '/api/v1/dogs' });
 
@@ -58,10 +59,32 @@ const createDog = async (ctx: RouterContext, next: any) => {
   if (result.status == 201) {
     ctx.status = 201;
     ctx.body = body;
+
+    console.log(body);
+    const message = `A new dog ${body.name} has been added. Please check it out the website!`;
+    console.log(message);
+    try {
+      const response = await fetch(`https://graph.facebook.com/${config.facebook_page_id}/feed`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${config.facebook_access_token}`
+        },
+        body: JSON.stringify({ message })
+      });
+
+      console.log(response.json());
+    } catch (error) {
+      ctx.status = 500;
+      ctx.body = { error: error.message };
+    }
   } else {
     ctx.status = 500;
     ctx.body = { err: "insert data failed" };
   }
+
+  // post to fb
+
 
   await next();
 }
@@ -200,5 +223,31 @@ router.get('/search', searchDogs);
 router.put('/:id([0-9]{1,})/upload-photo', basicAuth, uploadPhoto);
 router.get('/:id([0-9]{1,})/photos', getPhotos);
 router.get('/photos', getPhotosByName);
+
+
+
+router.post('/post-to-facebook', async (ctx) => {
+  const { message } = ctx.request.body;
+
+  try {
+    const response = await fetch(`https://graph.facebook.com/v20.0/me/feed`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${config.facebook_access_token}`
+      },
+      body: JSON.stringify({ message })
+    });
+
+    const data = await response.json();
+    ctx.body = data;
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { error: error.message };
+  }
+});
+
+
+
 
 export { router };
