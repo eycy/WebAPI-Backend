@@ -1,6 +1,8 @@
 import { authenticate } from '../controllers/auth';
 import * as model from '../models/users.model';
 import bodyParser from "koa-bodyparser";
+import Router from 'koa-router';
+import { RouterContext } from 'koa-router';
 
 const router = new Router({ prefix: '/api/v1/users' });
 
@@ -22,7 +24,7 @@ const createUserRoute = async (ctx: RouterContext, next: any) => {
 
 const getByUsername = async (ctx: RouterContext, next: any) => {
   const body = ctx.request.body;
-  const dogs = await findByUserName(body.username);
+  const dogs = await model.findByUserName(body.username);
   if (dogs.length)
     ctx.status = 200;
   else
