@@ -124,3 +124,9 @@ export const getPhotosById = async (id: any) => {
   const data = await db.run_query(query, values);
   return data;
 };
+
+export const getAllBreeds = async () => {
+  const query = "SELECT id, name FROM breeds";
+  const breeds = await db.run_query(query, null);
+  return breeds;
+};

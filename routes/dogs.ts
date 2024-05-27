@@ -211,22 +211,7 @@ const getPhotosByName = async (ctx: RouterContext, next: any) => {
   await next();
 };
 
-
-
-router.get('/', getAll);
-router.post('/', basicAuth, bodyParser(), validateDog, createDog);
-router.get('/:id([0-9]{1,})', getById);
-router.put('/:id([0-9]{1,})', basicAuth, bodyParser(), validateDog, updateDog);
-router.del('/:id([0-9]{1,})', basicAuth, deleteDog);
-router.get('/search', searchDogs);
-
-router.put('/:id([0-9]{1,})/upload-photo', basicAuth, uploadPhoto);
-router.get('/:id([0-9]{1,})/photos', getPhotos);
-router.get('/photos', getPhotosByName);
-
-
-
-router.post('/post-to-facebook', async (ctx) => {
+const postToFacebook = async (ctx: RouterContext, next: any) => {
   const { message } = ctx.request.body;
 
   try {
@@ -245,8 +230,35 @@ router.post('/post-to-facebook', async (ctx) => {
     ctx.status = 500;
     ctx.body = { error: error.message };
   }
-});
+}
 
+const getAllBreeds = async (ctx: RouterContext, next: any) => {
+  const breeds = await model.getAllBreeds();
+  if (breeds.length) {
+    ctx.body = breeds;
+  } else {
+    ctx.body = {};
+  }
+  await next();
+}
+
+
+
+
+router.get('/', getAll);
+router.post('/', basicAuth, bodyParser(), validateDog, createDog);
+router.get('/:id([0-9]{1,})', getById);
+router.put('/:id([0-9]{1,})', basicAuth, bodyParser(), validateDog, updateDog);
+router.del('/:id([0-9]{1,})', basicAuth, deleteDog);
+router.get('/search', searchDogs);
+
+router.put('/:id([0-9]{1,})/upload-photo', basicAuth, uploadPhoto);
+router.get('/:id([0-9]{1,})/photos', getPhotos);
+router.get('/photos', getPhotosByName);
+
+router.post('/post-to-facebook', postToFacebook);
+
+router.get('/breeds', getAllBreeds);
 
 
 
