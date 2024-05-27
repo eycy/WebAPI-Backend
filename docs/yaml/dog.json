@@ -27,11 +27,6 @@
           "description": "Is the dog listing published or not",
           "type": "boolean"
         },
-        "authorID": {
-          "description": "User ID of the dog listing author",
-          "type": "integer",
-          "minimum": 0
-        },
       },
       "required": ["name", "breed_id"]
     }
