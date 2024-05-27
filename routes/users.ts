@@ -23,7 +23,7 @@ const createUserRoute = async (ctx: RouterContext, next: any) => {
 
 
 const getByUsername = async (ctx: RouterContext, next: any) => {
-  const body = ctx.request.body;
+  const body: { username?: string } = ctx.request.body;
   const dogs = await model.findByUserName(body.username);
   if (dogs.length)
     ctx.status = 200;
@@ -33,11 +33,16 @@ const getByUsername = async (ctx: RouterContext, next: any) => {
   await next();
 }
 
+interface AddRemoveFavoriteResult {
+  success: boolean;
+  message?: string;
+}
+
 const addFavoriteRoute = async (ctx: RouterContext) => {
   const userid = ctx.state.user.user.id;
-  const { dogid } = ctx.request.body;
+  const { dogid }: { dogid?: number } = ctx.request.body;
 
-  const result = await model.addFavorite(userid, dogid);
+  const result: AddRemoveFavoriteResult = await model.addFavorite(userid, dogid);
 
   if (result.success) {
     ctx.status = 201;
@@ -50,8 +55,8 @@ const addFavoriteRoute = async (ctx: RouterContext) => {
 
 const removeFavoriteRoute = async (ctx: RouterContext) => {
   const userid = ctx.state.user.user.id;
-  const { dogid } = ctx.request.body;
-  const result = await model.removeFavorite(userid, dogid);
+  const { dogid }: { dogid?: number } = ctx.request.body;
+  const result: AddRemoveFavoriteResult = await model.removeFavorite(userid, dogid);
 
   if (result.success) {
     ctx.status = 200;
@@ -63,14 +68,25 @@ const removeFavoriteRoute = async (ctx: RouterContext) => {
 };
 
 
+interface favoritesResult {
+  dog_id?: number,
+  user_id?: number
+}
+
+interface getFavoritesResult {
+  success?: boolean;
+  favorites?: favoritesResult[];
+  message?: string;
+}
+
 const getFavoritesRoute = async (ctx: RouterContext) => {
 
   const userId = ctx.state.user.user.id;
-  const result = await model.getFavorites(userId);
+  const result: getFavoritesResult = await model.getFavorites(userId);
 
   if (result.success) {
     console.log(result.favorites);
-    const dogIds = result.favorites.map((favorite) => favorite.dog_id);
+    const dogIds = result.favorites.map((favorite: { dog_id: number }) => favorite.dog_id);
     ctx.status = 200;
     ctx.body = { dogIds };
   } else {
@@ -79,9 +95,14 @@ const getFavoritesRoute = async (ctx: RouterContext) => {
   }
 };
 
+interface SubmitAdoptionRequestBody {
+  dogid?: number;
+  message?: string;
+}
+
 const submitAdoptionRoute = async (ctx: RouterContext) => {
   const userid = ctx.state.user.user.id;
-  const { dogid, message } = ctx.request.body;
+  const { dogid, message }: SubmitAdoptionRequestBody = ctx.request.body;
 
   const result = await model.submitAdoption(userid, dogid, message);
 
@@ -94,9 +115,15 @@ const submitAdoptionRoute = async (ctx: RouterContext) => {
   }
 };
 
+
+interface SubmitAdoptionRequestBody {
+  adoptionId?: number;
+  message?: string;
+  isAccept?: boolean;
+}
+
 const replyAdoptionRoute = async (ctx: RouterContext) => {
-  const userid = ctx.state.user.user.id;
-  const { adoptionId, message, isAccept } = ctx.request.body;
+  const { adoptionId, message, isAccept }: SubmitAdoptionRequestBody = ctx.request.body;
 
   const result = await model.replyAdoption(adoptionId, message, isAccept);
 
@@ -110,9 +137,14 @@ const replyAdoptionRoute = async (ctx: RouterContext) => {
 };
 
 
+interface GetAllAdoptionsRouteResult {
+  message?: string;
+  success: boolean;
+}
+
 const getAllAdoptionsRoute = async (ctx: RouterContext) => {
   if (ctx.state.user.user.isstaff) {
-    const result = await model.getAllAdoptions();
+    const result: GetAllAdoptionsRouteResult = await model.getAllAdoptions();
     if (result.success) {
       ctx.status = 200;
       ctx.body = { result };
@@ -125,10 +157,16 @@ const getAllAdoptionsRoute = async (ctx: RouterContext) => {
   }
 };
 
+
+interface GetAdoptionsRouteResult {
+  message?: string;
+  success: boolean;
+}
+
 const getAdoptionsRoute = async (ctx: RouterContext) => {
 
   const userId = ctx.state.user.user.id;
-  const result = await model.getAdoptions(userId);
+  const result: GetAdoptionsRouteResult = await model.getAdoptions(userId);
 
   if (result.success) {
     ctx.status = 200;
@@ -139,8 +177,12 @@ const getAdoptionsRoute = async (ctx: RouterContext) => {
   }
 };
 
+interface GetAdoptionsRouteBody {
+  adoptionid?: number;
+}
+
 const deleteAdoptionRoute = async (ctx: RouterContext, next: any) => {
-  const { adoptionid } = ctx.request.body;
+  const { adoptionid }: GetAdoptionsRouteBody = ctx.request.body;
   const result = await model.deleteAdoption(adoptionid);
   if (result.success) {
     ctx.status = 200;

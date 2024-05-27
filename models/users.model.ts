@@ -59,7 +59,7 @@ export const addFavorite = async (userId: number, dogId: number) => {
 
 
 export const getFavorites = async (userId: number) => {
-  const query = 'SELECT * FROM users_fav WHERE user_id = ?';
+  const query = 'SELECT user_id, dog_id FROM users_fav WHERE user_id = ?';
 
   try {
     const favorites = await db.run_query(query, [userId]);
