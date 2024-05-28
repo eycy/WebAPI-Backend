@@ -19,7 +19,7 @@ export const createUser = async (userData: {
   const { signupcode, firstname, lastname, username, password, email, accesstoken } = userData;
 
   let query = 'INSERT INTO users (firstname, lastname, username, password, email, accesstoken) VALUES (?, ?, ?, ?, ?, ?)';
-  let values = [firstname, lastname, username, password, email, accesstoken];
+  const values = [firstname, lastname, username, password, email, accesstoken];
 
   if (signupcode) {
     const checkSignupCodeQuery = 'SELECT * FROM signup_code WHERE code = ? AND isUsed = false';

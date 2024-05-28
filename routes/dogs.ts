@@ -213,7 +213,7 @@ const getPhotosByName = async (ctx: RouterContext, next: any) => {
   await next();
 };
 
-const postToFacebook = async (ctx: RouterContext, next: any) => {
+const postToFacebook = async (ctx: RouterContext) => {
   const { message } = ctx.request.body;
 
   try {
