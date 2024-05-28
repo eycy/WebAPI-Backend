@@ -27,10 +27,6 @@
           "description": "User email",
           "type": "string"
         },
-        "signupcode": {
-          "description": "Staff signup code",
-          "type": "string"
-        },
         "isstaff": {
           "description": "Is user a staff",
           "type": "boolean"

@@ -15,7 +15,7 @@ info:
 tags:
   - name: Users
     description: API endpoints for user management
-  - name: dogs
+  - name: Dogs
     description: Access and perform CRUD operations for dogs
 paths:
   /dogs/{id}:
@@ -28,9 +28,9 @@ paths:
         description: Numeric ID of the dog
     get:
       tags:
-        - dogs
+        - Dogs
       description:
-        get dog by id
+        Get dog by id
       response:
         '200':
           description: View of an dog record
@@ -38,7 +38,7 @@ paths:
           description: dog not found
     put:
       tags:
-        - dogs
+        - Dogs
       description:
         Update dog by ID.
       responses:
@@ -48,7 +48,7 @@ paths:
           description: dog was not found in the DB.
     delete:
       tags:
-        - dogs
+        - Dogs
       description:
         Delete dog by ID.
       responses:
@@ -59,14 +59,14 @@ paths:
   /dogs:
     get:
       tags:
-        - dogs
+        - Dogs
       description: Get all dogs
       responses:
         '200':
           description: List of all dogs
     post:
       tags:
-        - dogs
+        - Dogs
       description:
         Create an dog
       requestBody:
@@ -82,7 +82,7 @@ paths:
   /dogs/search:
     get:
       tags:
-        - dogs
+        - Dogs
       description: Search for dogs
       parameters:
         - in: query
@@ -96,10 +96,70 @@ paths:
           description: List of dogs matching the search query
         '404':
           description: No dogs found matching the search query
+  /dogs/{id}/upload-photo:
+    post:
+      tags:
+        - Dogs
+      description: Upload a photo for a specific dog
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                photo:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Photo uploaded successfully
+        '400':
+          description: File upload failed
+        '500':
+          description: Error uploading photo
+
+  /dogs/{id}/photos:
+    get:
+      tags:
+        - Dogs
+      description: Retrieve the photo for a specific dog
+      responses:
+        '200':
+          description: Photo retrieved successfully
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Photo not found
+
+  /dogs/photos:
+    get:
+      tags:
+        - Dogs
+      description: Retrieve a photo by name
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          required: true
+          description: The name of the photo file
+      responses:
+        '200':
+          description: Photo retrieved successfully
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Photo not found
   /users:
     post:
       tags:
-        - users
+        - Users
       description: Create a user
       requestBody:
         description: User information in JSON format
@@ -113,3 +173,163 @@ paths:
           description: User created
         '500':
           description: Error creating user
+    get:
+      tags:
+        - Users
+      description: Get user by username
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: true
+          description: The username of the user
+      responses:
+        '200':
+          description: User retrieved successfully
+        '404':
+          description: User not found
+  /users/addFavorite:
+    post:
+      tags:
+        - Users
+      description: Add a favorite dog for a user
+      requestBody:
+        description: Dog ID to add as favorite
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dogid:
+                  type: integer
+      responses:
+        '201':
+          description: Favorite added successfully
+        '500':
+          description: Error adding favorite
+
+  /users/removeFavorite:
+    post:
+      tags:
+        - Users
+      description: Remove a favorite dog for a user
+      requestBody:
+        description: Dog ID to remove from favorites
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dogid:
+                  type: integer
+      responses:
+        '200':
+          description: Favorite removed successfully
+        '500':
+          description: Error removing favorite
+
+  /users/favorites:
+    get:
+      tags:
+        - Users
+      description: Retrieve a user's favorite dogs
+      responses:
+        '200':
+          description: List of favorite dog IDs
+        '500':
+          description: Error retrieving favorites
+  /users/submitAdoption:
+    post:
+      tags:
+        - Users
+      description: Submit an adoption request for a dog
+      requestBody:
+        description: Dog ID and optional message
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dogid:
+                  type: integer
+                message:
+                  type: string
+      responses:
+        '201':
+          description: Adoption request submitted successfully
+        '500':
+          description: Error submitting adoption request
+
+  /users/getAllAdoptions:
+    get:
+      tags:
+        - Users
+      description: Retrieve all adoption requests (for staff users)
+      responses:
+        '200':
+          description: List of all adoption requests
+        '500':
+          description: Error retrieving adoption requests
+        '501':
+          description: Forbidden for non-staff users
+
+  /users/getAdoptions:
+    get:
+      tags:
+        - Users
+      description: Retrieve a user's own adoption requests
+      responses:
+        '200':
+          description: List of a user's adoption requests
+        '500':
+          description: Error retrieving adoption requests
+
+  /users/replyAdoption:
+    post:
+      tags:
+        - Users
+      description: Reply to an adoption request (for staff users)
+      requestBody:
+        description: Adoption ID, message, and accept/reject status
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                adoptionid:
+                  type: integer
+                message:
+                  type: string
+                isAccept:
+                  type: boolean
+      responses:
+        '201':
+          description: Adoption request replied successfully
+        '500':
+          description: Error replying to adoption request
+
+  /users/deleteAdoption:
+    delete:
+      tags:
+        - Users
+      description: Delete an adoption request
+      requestBody:
+        description: Adoption ID to delete
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                adoptionid:
+                  type: integer
+      responses:
+        '200':
+          description: Adoption request deleted successfully
+        '500':
+          description: Error deleting adoption request
