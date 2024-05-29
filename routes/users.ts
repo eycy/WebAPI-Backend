@@ -194,7 +194,6 @@ const deleteAdoptionRoute = async (ctx: RouterContext, next: any) => {
   await next();
 }
 
-router.post('/', createUserRoute);
 router.get('/', getByUsername);
 router.post('/', createUserRoute);
 router.post('/addFavorite', authenticate, addFavoriteRoute);

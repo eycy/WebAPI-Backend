@@ -53,10 +53,14 @@ const searchDogs = async (ctx: RouterContext, next: any) => {
   await next();
 }
 
-
+interface CreateDogBody {
+  name: string;
+  description: string;
+  breed_id: number;
+}
 
 const createDog = async (ctx: RouterContext, next: any) => {
-  const body = ctx.request.body;
+  const body = ctx.request.body as CreateDogBody;
   const result = await model.add(body);
   if (result.status == 201) {
     ctx.status = 201;
@@ -174,7 +178,7 @@ const uploadPhoto = async (ctx: RouterContext, next: any) => {
 const getPhotos = async (ctx: RouterContext, next: any) => {
   const id = +ctx.params.id;
   try {
-    const photo = await model.getPhotosById(id);
+    const photo = await model.getPhotosById(id) as { new_filename: string | null }[];
     let photoPath = path.join('uploads', 'Photo_Not_Available.jpg');
     if (photo[0].new_filename != null) {
       photoPath = path.join('uploads', photo[0].new_filename);
@@ -199,7 +203,13 @@ const getPhotosByName = async (ctx: RouterContext, next: any) => {
   }
 
   try {
-    const photoPath = path.join('uploads', fileName);
+    let photoPath: string;
+    if (Array.isArray(fileName)) {
+      photoPath = path.join('uploads', ...fileName);
+    } else {
+      photoPath = path.join('uploads', fileName);
+    }
+
     const photoBuffer = await fs.promises.readFile(photoPath);
 
     ctx.set('Content-Type', 'image/*');
@@ -213,8 +223,12 @@ const getPhotosByName = async (ctx: RouterContext, next: any) => {
   await next();
 };
 
+interface PostToFacebookRequestBody {
+  message?: string;
+}
+
 const postToFacebook = async (ctx: RouterContext) => {
-  const { message } = ctx.request.body;
+  const { message }: PostToFacebookRequestBody = ctx.request.body;
 
   try {
     const response = await fetch(`https://graph.facebook.com/v20.0/me/feed`, {

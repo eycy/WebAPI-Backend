@@ -4,8 +4,9 @@ import passport from 'koa-passport';
 import { router } from './dogs';
 import request from 'supertest';
 import * as model from '../models/dogs.model';
+import { config } from '../config';
 
-const credential: string = 'Basic YWxpY2U6cGFzc3dvcmQ='; // Base64 encoded credentials: Alice:password
+const credential: string = config.test_cred;
 
 
 const app: Koa = new Koa();
@@ -134,7 +135,7 @@ describe('GET /api/v1/dogs/search - search with fields', () => {
     const expectedData = [{ id: 1, name: 'Test Dog', breed_id: '1' }];
 
     jest.spyOn(model, 'searchByFields').mockImplementation(
-      async (searchFields: Record<string, string | number>, operator?: 'AND' | 'OR') => {
+      async () => {
         // Simulate the resolved value
         return expectedData;
       }

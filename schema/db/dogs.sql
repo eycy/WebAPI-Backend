@@ -19,12 +19,3 @@ CREATE TABLE public.dogs (
   FOREIGN KEY(breed_id) 
     REFERENCES breeds(id)
 );
-
-
-INSERT INTO dogs (name, breed_id, description) VALUES
-('Money', 1, 'Description for Money'),
-('Nana', 2, 'Nana is 3 years old'),
-('Octopus', 3, 'A dog, not an octopus'),
-('Peppa', 3, 'PIG!!!!!'),
-('Queen', 4, 'Your majesty'),
-('Rocky', 1, 'Tough as a rock');

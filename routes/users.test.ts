@@ -9,8 +9,18 @@ const app: Koa = new Koa();
 app.use(json());
 app.use(router.routes());
 
+let server: any;
+
+beforeAll(async () => {
+  server = await app.listen(3000);
+});
+
+afterAll(async () => {
+  await server.close();
+});
+
 describe('POST /api/v1/users - create a user', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
   });
 

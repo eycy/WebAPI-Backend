@@ -18,32 +18,17 @@ export const createUser = async (userData: {
 }) => {
   const { signupcode, firstname, lastname, username, password, email, accesstoken } = userData;
 
-  let query = 'INSERT INTO users (firstname, lastname, username, password, email, accesstoken) VALUES (?, ?, ?, ?, ?, ?)';
-  const values = [firstname, lastname, username, password, email, accesstoken];
-
-  if (signupcode) {
-    const checkSignupCodeQuery = 'SELECT * FROM signup_code WHERE code = ? AND isUsed = false';
-    const checkSignupCodeResult = await db.run_query(checkSignupCodeQuery, [signupcode]);
-
-    if (checkSignupCodeResult.length > 0) {
-      const updateSignupCodeQuery = 'UPDATE signup_code SET isUsed = true WHERE code = ?';
-      await db.run_query(updateSignupCodeQuery, [signupcode]);
-
-      query = 'INSERT INTO users (firstname, lastname, username, password, email, signupcode, isStaff, accesstoken) VALUES (?, ?, ?, ?, ?, ?, TRUE, ?)';
-      values.push(signupcode);
-    } else {
-      return { success: false, message: 'Incorrect signup code or code already used.' };
-    }
-  }
+  let query = 'INSERT INTO users (firstname, lastname, username, password, email, accesstoken, signupcode, isStaff) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [firstname, lastname, username, password, email, accesstoken || null, signupcode || null, signupcode ? true : false];
 
   try {
     await db.run_insert(query, values);
     return { success: true, message: 'User created successfully' };
   } catch (error) {
+    console.error(error);
     return { success: false, message: 'Error creating user' };
   }
 };
-
 
 
 export const addFavorite = async (userId: number, dogId: number) => {
