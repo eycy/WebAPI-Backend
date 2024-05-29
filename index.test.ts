@@ -13,7 +13,7 @@ afterEach(() => {
   mockListen.mockReset();
 });
 
-test('Server works', async() => {
+test('Server works', async () => {
   require('./index');
   expect(mockListen.mock.calls.length).toBe(0);
 })

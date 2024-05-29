@@ -17,7 +17,7 @@ app.use(router.middleware());
 let server; // Declare a variable to store the server instance
 
 beforeAll(() => {
-  server = app.listen(3000);
+  server = app.listen(3001);
 });
 
 afterAll((done) => {

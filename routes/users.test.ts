@@ -4,6 +4,9 @@ import json from 'koa-json';
 import * as usersModel from '../models/users.model';
 import { router } from './users';
 import { Context } from 'koa';
+import { config } from '../config';
+
+const credential: string = config.test_cred;
 
 const app: Koa = new Koa();
 app.use(json());
@@ -18,6 +21,8 @@ beforeAll(async () => {
 afterAll(async () => {
   await server.close();
 });
+
+// All tests should mock the reply from model to avoid messing up data
 
 describe('POST /api/v1/users - create a user', () => {
   beforeEach(async () => {
@@ -70,3 +75,45 @@ describe('POST /api/v1/users - create a user', () => {
     expect(response.body).toEqual({ error: expectedResult.message });
   });
 });
+
+
+describe('GET /api/v1/users/favorites', () => {
+  it('should get the user favorite dogs', async () => {
+    const userId = 1;
+    const expectedResult = {
+      success: true,
+      favorites: [
+        { dog_id: 1, user_id: userId },
+        { dog_id: 2, user_id: userId }
+      ]
+    };
+
+    // mocking model to test route and make sure there is records for testing
+    const getFavoritesSpy = jest.spyOn(usersModel, 'getFavorites').mockResolvedValueOnce(expectedResult);
+
+    const response = await request(app.callback())
+      .get('/api/v1/users/favorites')
+      .set('Authorization', credential);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ dogIds: [1, 2] });
+    expect(getFavoritesSpy).toHaveBeenCalledWith(userId);
+  });
+
+  it('should return an error if getting favorites fails', async () => {
+    const userId = 1;
+    const expectedResult = { success: false, message: 'Error getting favorites' };
+
+    const getFavoritesSpy = jest.spyOn(usersModel, 'getFavorites').mockResolvedValueOnce(expectedResult);
+
+    const response = await request(app.callback())
+      .get('/api/v1/users/favorites')
+      .set('Authorization', credential);
+
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ error: expectedResult.message });
+    expect(getFavoritesSpy).toHaveBeenCalledWith(userId);
+  });
+});
+
+
