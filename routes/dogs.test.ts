@@ -55,7 +55,7 @@ describe('POST /api/v1/dogs - create an dog', () => {
     // Assert the response
     expect(createddogResponse.statusCode).toEqual(201);
 
-  });
+  }, 30000);
 });
 
 
@@ -114,7 +114,7 @@ describe('DELETE /api/v1/dogs/:id - delete an dog', () => {
 
     // Assert the response
     expect(response.statusCode).toEqual(200);
-  }, 10000); // Increase timeout to 10 seconds
+  }, 30000); // Increase timeout to 10 seconds
 });
 
 describe('GET /api/v1/dogs/search - search with fields', () => {

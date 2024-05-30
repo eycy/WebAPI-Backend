@@ -50,7 +50,7 @@ export const searchByFields = async (searchFields: Record<string, string | numbe
 
 //list all the dogs in the database
 export const getAll = async () => {
-  
+
   const query = "SELECT d.*, b.name as breedName FROM dogs d, breeds b WHERE d.breed_id = b.id";
   const data = await db.run_query(query, null);
   return data;
@@ -132,8 +132,8 @@ export const getAllBreeds = async () => {
 };
 
 export const getBreedById = async (id: any) => {
-  const query = "SELECT id, name FROM breeds where id = ?";
+  const query = "SELECT name FROM breeds where id = ?";
   const values = [id];
-  const breed = await db.run_query(query, values);
-  return breed;
+  const [name] = await db.run_query(query, values);
+  return name[0];
 };
