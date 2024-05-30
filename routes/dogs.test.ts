@@ -156,7 +156,8 @@ describe('GET /api/v1/dogs/search - search with fields', () => {
 
     jest.spyOn(model, 'searchByFields').mockImplementation(
       async (searchFields: Record<string, string | number>, operator?: 'AND' | 'OR') => {
-        // Simulate the resolved value
+        console.log(searchFields);
+        console.log(operator);
         return expectedData;
       }
     );
@@ -176,7 +177,8 @@ describe('GET /api/v1/dogs/search - search with fields', () => {
 
     jest.spyOn(model, 'searchByFields').mockImplementation(
       async (searchFields: Record<string, string | number>, operator?: 'AND' | 'OR') => {
-        // Simulate the resolved value
+        console.log(searchFields);
+        console.log(operator);
         return expectedData;
       }
     );
@@ -196,6 +198,8 @@ describe('GET /api/v1/dogs/search - search with fields', () => {
 
     (model.searchByFields as jest.Mock).mockImplementationOnce(
       async (searchFields: Record<string, string | number>, operator?: 'AND' | 'OR') => {
+        console.log(searchFields);
+        console.log(operator);
         throw new Error(errorMessage);
       }
     );
@@ -214,7 +218,8 @@ describe('GET /api/v1/dogs/search - search with fields', () => {
 
     jest.spyOn(model, 'searchByFields').mockImplementation(
       async (searchFields: Record<string, string | number>, operator?: 'AND' | 'OR') => {
-        // Simulate an empty response (no dogs found)
+        console.log(searchFields);
+        console.log(operator);
         return [];
       }
     );

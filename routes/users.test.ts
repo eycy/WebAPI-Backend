@@ -3,7 +3,6 @@ import Koa from 'koa';
 import json from 'koa-json';
 import * as usersModel from '../models/users.model';
 import { router } from './users';
-import { Context } from 'koa';
 import { config } from '../config';
 
 const credential: string = config.test_cred;
@@ -42,7 +41,7 @@ describe('POST /api/v1/users - create a user', () => {
       message: 'User created successfully'
     };
 
-    const createUserSpy = jest.spyOn(usersModel, 'createUser').mockResolvedValueOnce(expectedResult);
+    jest.spyOn(usersModel, 'createUser').mockResolvedValueOnce(expectedResult);
 
     const response = await request(app.callback())
       .post('/api/v1/users')
@@ -65,7 +64,7 @@ describe('POST /api/v1/users - create a user', () => {
       message: 'Failed to create user'
     };
 
-    const createUserSpy = jest.spyOn(usersModel, 'createUser').mockResolvedValueOnce(expectedResult);
+    jest.spyOn(usersModel, 'createUser').mockResolvedValueOnce(expectedResult);
 
     const response = await request(app.callback())
       .post('/api/v1/users')
