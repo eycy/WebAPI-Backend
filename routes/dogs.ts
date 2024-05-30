@@ -59,6 +59,12 @@ interface CreateDogBody {
   breed_id: number;
 }
 
+
+interface BreedIf {
+  name: string;
+  id: number;
+}
+
 const createDog = async (ctx: RouterContext, next: any) => {
   const body = ctx.request.body as CreateDogBody;
   const result = await model.add(body);
@@ -67,7 +73,11 @@ const createDog = async (ctx: RouterContext, next: any) => {
     ctx.body = body;
 
     console.log(body);
-    const message = `A new dog ${body.name} has been added. Please check it out the website!`;
+
+    const breeds = await model.getBreedById(body.breed_id);
+    const breed: BreedIf = breeds[0];
+    console.log(breed.name);
+    const message = `A new ${breed.name}, ${body.name}, is now in Canine Shelter. Please check it out the website!`;
     console.log(message);
     try {
       const response = await fetch(`https://graph.facebook.com/${config.facebook_page_id}/feed`, {

@@ -130,3 +130,10 @@ export const getAllBreeds = async () => {
   const breeds = await db.run_query(query, null);
   return breeds;
 };
+
+export const getBreedById = async (id: any) => {
+  const query = "SELECT id, name FROM breeds where id = ?";
+  const values = [id];
+  const breed = await db.run_query(query, values);
+  return breed;
+};
