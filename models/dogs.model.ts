@@ -50,8 +50,8 @@ export const searchByFields = async (searchFields: Record<string, string | numbe
 
 //list all the dogs in the database
 export const getAll = async () => {
-  // TODO: use page, limit, order to give pagination
-  const query = "SELECT * FROM dogs;"
+  
+  const query = "SELECT d.*, b.name as breedName FROM dogs d, breeds b WHERE d.breed_id = b.id";
   const data = await db.run_query(query, null);
   return data;
 }
