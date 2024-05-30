@@ -43,8 +43,8 @@ describe('POST /api/v1/dogs - create an dog', () => {
   it('should create an dog', async () => {
     // Create a new dog
     const newdog = {
-      name: 'test create dog',
-      description: 'description of test dog',
+      name: 'Lala',
+      description: 'Nice old dog',
       breed_id: 1
     };
     const createddogResponse = await request(app.callback())
@@ -65,8 +65,8 @@ describe('PUT /api/v1/dogs/:id - update a dog', () => {
     const dogId = 1;
     const randomNumber = Math.floor(Math.random() * 1000); // Generate a random number
     const updateddog = {
-      name: `Updated Name ${randomNumber}`,
-      description: `Updated content ${randomNumber}`,
+      name: `Caca ${randomNumber}`,
+      description: `Caca ${randomNumber} is a nice dog`,
       breed_id: 1
     };
 
