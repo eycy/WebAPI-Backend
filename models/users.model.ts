@@ -18,7 +18,7 @@ export const createUser = async (userData: {
 }) => {
   const { signupcode, firstname, lastname, username, password, email, accesstoken } = userData;
 
-  let query = 'INSERT INTO users (firstname, lastname, username, password, email, accesstoken, signupcode, isStaff) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+  const query = 'INSERT INTO users (firstname, lastname, username, password, email, accesstoken, signupcode, isStaff) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
   const values = [firstname, lastname, username, password, email, accesstoken || null, signupcode || null, signupcode ? true : false];
 
   try {
