@@ -69,9 +69,8 @@ const createDog = async (ctx: RouterContext, next: any) => {
     console.log(body);
 
     const breed: string = await model.getBreedById(body.breed_id);
-    // const breed = breeds.find((b: BreedIf) => b.id === body.breed_id);
     console.log(breed);
-    const message = `A new ${breed}, ${body.name}, is now in Canine Shelter. Please check it out the website!`;
+    const message = `A new dog, ${body.name}, is now in Canine Shelter. Please check it out the website!`;
     console.log(message);
     try {
       const response = await fetch(`https://graph.facebook.com/${config.facebook_page_id}/feed`, {
